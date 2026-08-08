@@ -224,6 +224,38 @@ customer's value in Part 17 and then ignored it when deciding who to contact.
 
 ---
 
+## 4e. A number we could not reproduce, caught while writing the slides
+
+While building the presentation a team member tried to verify the claim that our engineered
+features improved test recall from 0.658 to 0.714. He re-ran it several ways and could not
+reproduce it anywhere, so he removed the figure from the slide rather than present a number he
+could not stand behind.
+
+He was right twice over. First, the comparison had never been in the notebook at all: Part 5
+created the features and plotted churn rate against them, but nothing measured whether the model
+was actually better with them. Second, and worse, the original figure was **confounded**. The two
+sides of the comparison had each picked their own decision threshold (0.65 without the features,
+0.60 with them), so the recall gap was partly the threshold moving, not the features doing
+anything.
+
+We then ran it properly, holding the threshold fixed at 0.30 for both sides and changing nothing
+but the features. That comparison is now in Part 5:
+
+| Feature set | Recall | Precision | F1 | ROC AUC |
+|---|---|---|---|---|
+| Original only | 0.9198 | 0.4185 | 0.5753 | 0.8319 |
+| With engineered | 0.9278 | 0.4305 | 0.5881 | 0.8376 |
+
+The features do help, on every measure including ROC AUC which does not depend on the threshold,
+but by well under one percentage point of recall rather than the 5.6 points originally claimed.
+
+**Lesson:** this is the error we are most pleased to have caught, because it was ours to catch.
+The number came from AI-assisted analysis, it sounded reasonable, and it had already been copied
+into our notes and our draft slides before anybody tried to reproduce it. Nothing flagged it. It
+only surfaced because a team member refused to present a figure he could not find in the code.
+
+---
+
 ## 5. Where AI was used for code and writing
 
 - Debugging a `NameError` caused by running notebook cells out of order after a kernel restart.
